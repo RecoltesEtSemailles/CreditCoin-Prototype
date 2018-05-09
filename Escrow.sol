@@ -1,4 +1,4 @@
-contract Escrow is SafeMath{
+   contract Escrow is SafeMath{
 
     // address of the content creator
   	address public beneficiary;
@@ -28,6 +28,20 @@ contract Escrow is SafeMath{
       	if(phase == _phase) _;
   	}
   	
+  	struct Depositer {
+        uint etherBalance;
+        address depositer;
+        mapping(address => Token) tokens;
+    }
+
+    struct Tokens {
+        bytes32 symbol;
+        uint tokenBalance;
+        address tokenAddress;
+    }
+
+    mapping(address => Depositer) public depositers;
+  	
   	event Deposit(address indexed depositer, address _token, uint  amount);
 
   	function Escrow(address _token){
@@ -45,12 +59,15 @@ contract Escrow is SafeMath{
   	function checkBalance() constant returns (uint256 tokenBalance){
       	return ERC20Token.balanceOf(this);
   	}
-  	
-   	function deposit(uint256 amount) {
-         ERC20Token.approve(msg.sender, amount);
-         ERC20Token.transferFrom(msg.sender, this, amount);
-         Deposit(msg.sender, ERC20Token, amount);
-     }
+
+
+    function deposit(address token, byte tokenSymbol, uint256 amount) {
+
+        depositers[msg.sender] = Depositer(0, msg.sender);
+        depositers[msg.sender].tokens[token] = Tokens(tokenSymbol, amount, token);
+        ERC20Token.transferFrom(msg.sender, this, amount);
+        Deposit(msg.sender, token, amount);
+    }
 
   	function withdrawal() external{
       	require(msg.sender == beneficiary);
@@ -67,7 +84,8 @@ contract Escrow is SafeMath{
 
     // first_milestone releases 1/3 of tokens
   	function first_milestone(uint256 balance) private atPhase(Phases.firstMilestone){
-      	// add conditioning
+      	secondMilestone = now + 13 weeks;
+      	thirdMilestone = secondMilestone + 13 weeks;
       	uint256 amountToTransfer = safeDiv(safeMul(balance, 333), 1000);
       	ERC20Token.transfer(beneficiary, amountToTransfer);
       	nextPhase();
@@ -85,7 +103,7 @@ contract Escrow is SafeMath{
       	ERC20Token.transfer(beneficiary, balance);
   	}
 
-  	function withdrawOtherCCOIN(address _token) external{
+  	function withdrawOtherEDEX(address _token) external{
       	require(msg.sender == beneficiary);
       	require(_token != address(0));
       	Token token = Token(_token);
