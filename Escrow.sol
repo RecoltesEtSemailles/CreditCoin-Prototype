@@ -103,7 +103,7 @@
       	ERC20Token.transfer(beneficiary, balance);
   	}
 
-  	function withdrawOtherEDEX(address _token) external{
+  	function withdrawOtherCCOIN(address _token) external{
       	require(msg.sender == beneficiary);
       	require(_token != address(0));
       	Token token = Token(_token);
