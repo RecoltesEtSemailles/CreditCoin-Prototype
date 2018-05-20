@@ -84,8 +84,8 @@
 
     // first_milestone releases 1/3 of tokens
   	function first_milestone(uint256 balance) private atPhase(Phases.firstMilestone){
-      	secondMilestone = now + 13 weeks;
-      	thirdMilestone = secondMilestone + 13 weeks;
+      	secondMilestone = now + 4 weeks;
+      	thirdMilestone = secondMilestone + 4 weeks;
       	uint256 amountToTransfer = safeDiv(safeMul(balance, 333), 1000);
       	ERC20Token.transfer(beneficiary, amountToTransfer);
       	nextPhase();
