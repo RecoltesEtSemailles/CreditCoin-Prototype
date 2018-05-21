@@ -29,7 +29,7 @@ function Agreement(address buyer_address, address seller_address) public {
     }
     
     function payBalance() private {
-        // we are sending ourselves (contract creator) a fee
+        // we are sending ourselves a fee
         escrow.transfer(this.balance / 100);
         // send seller the balance
         if (seller.send(this.balance)) {
