@@ -23,7 +23,8 @@ function Agreement(address buyer_address, address seller_address) public {
         if (buyerOk && sellerOk){
             payBalance();
         } else if (buyerOk && !sellerOk && now > start + 2 minutes) {
-            // Freeze 30 days before release to buyer. The customer has to remember to call this method after freeze period.
+            // Freeze 2 minutes (just for the prototype) before release to buyer.
+            // The buyer has to call this method after freeze period.
             selfdestruct(buyer);
         }
     }
